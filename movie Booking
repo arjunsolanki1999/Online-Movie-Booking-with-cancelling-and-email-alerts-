@@ -1,0 +1,497 @@
+import smtplib
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEText import MIMEText
+import pickle
+import webbrowser
+import os
+class Movie():
+    def __init__(self,moviecode,name,timech,datech,email_id,recs,email,emaild):
+        self.moviecode=0
+        self.menu()
+        self.name=""
+        self.timech=""
+        self.datech=""
+        self.email_id=""
+        self.recs=""
+        self.email=""
+        self.emaild=""
+    def menu(self):
+        print "1.Book Movie"
+        print "2.View Latest Released Movie Trailer "
+        print "3.Cancel Booking"
+        print "4.View Record"
+        print "5.Leave Feedback"
+        print "6.Exit"
+        menuch=int(raw_input("Enter Your Choice(from above Numbers:"))
+        if menuch==1:
+            self.latest()
+            such=raw_input("Do You want to continue?(yes/no)")
+            if such=="yes":
+                self.menu()
+            elif such=="no":
+                print "Thank You For Visiting!"
+            else:
+                print"Wrong Input Re Directing to Menu"
+                self.menu()
+        elif menuch==2:
+            self.view(0)
+            such=raw_input("Do You want to continue?(yes/no)")
+            if such=="yes":
+                self.menu()
+            elif such=="no":
+                print "Thank You For Visiting!"
+            else:
+                print"Wrong Input Re Directing to Menu"
+                self.menu()
+        elif menuch==3:
+            self.delete("","","")
+            such=raw_input("Do You want to continue?(yes/no)")
+            if such=="yes":
+                self.menu()
+            elif such=="no":
+                print "Thank You For Visiting!"
+            else:
+                print"Wrong Input Re Directing to Menu"
+                self.menu()
+        elif menuch==4:
+            self.readdata()
+            such=raw_input("Do You want to continue?(yes/no)")
+            if such=="yes":
+                self.menu()
+            elif such=="no":
+                print "Thank You For Visiting!"
+            else:
+                print"Wrong Input Re Directing to Menu"
+        elif menuch==5:
+            self.feedback()
+            such=raw_input("Do You want to continue?(yes/no)")
+            if such=="yes":
+                self.menu()
+            elif such=="no":
+                print "Thank You For Visiting!"
+            else:
+                print"Wrong Input Re Directing to Menu"
+                self.menu()
+        elif menuch==6:
+            self.Exit()
+        else:
+            print "Wrong Input!!!! Re-directing  to Menu!"
+            self.menu()
+            
+
+        
+                
+    def latest(self):
+        moviename={1001:"Baywatch",1002:"Iron Man",1003:"Fast and Furious",1004:"La La Land",1005:"XXX-Return of Xander Cage"}
+        print "{Movie Code:Movie Name}"
+        print moviename
+        self.moviecode=int(raw_input("Enter Movie Code:"))
+        val=moviename.keys()
+        length=len(val)
+        try:
+            for i in range(length):
+                if self.moviecode==val[i]:
+                    self.timing("")
+
+            
+                   
+                        
+    def timing(self,timech):
+        time=["11:00 AM","01:45 PM", "07:15 PM" ,"10:00 PM"]
+        print time
+        self.timech=raw_input("Enter Time (you want to select from above):")
+        if self.timech=="11:00 AM":
+            self.date("")
+        elif self.timech=="01:45 PM":
+            self.date("")
+        elif self.timech=="07:15 PM":
+            self.date("")
+        elif self.timech=="10:00 PM":
+            self.date("")
+        else:
+            print"Wrong Time Input Try Again!(Enter similarly as shown in list above"
+            self.timing("")
+
+    def date(self,datech):
+        date=["1/2/2017","2/2/2017","3/2/2017","4/2/2017","5/2/2017"]
+        print date
+        self.datech=raw_input("Enter Desired Date From Above:")
+        if self.datech=="1/2/2017":
+            self.no_of_tickets(0,"","","")
+        elif self.datech=="2/2/2017":
+            self.no_of_tickets(0,"","","")
+        elif self.datech=="3/2/2017":
+            self.no_of_tickets(0,"","","")
+        elif self.datech=="4/2/2017":
+            self.no_of_tickets(0,"","","")
+        elif self.datech=="5/2/2017":
+            self.no_of_tickets(0,"","","")            
+        else:
+            print"Wrong Date Input Try Again!(Enter similarly as shown in list above"
+            self.timing("")
+
+    def no_of_tickets(self,moviecode,name,timech,datech):
+        notic=int(raw_input("Enter no. of Tickets to Book(max 6):"))
+        fileopen=open("Normal.log","r")
+        d=pickle.load(fileopen)
+        fileopen.close()
+        if notic<=6:
+            if d<notic:
+                    print "Sorry only",d,"seats left. Try Again!"
+                    self.no_of_tickets(0,"","")
+            else:
+                print"Normal Seats=INR 300 per seat"
+                print"Recliner Seats=INR 600 per seat"
+                ticch=raw_input("(NORMAL or RECLINER) ENTER:")
+                if ticch=="NORMAL":
+                    fileopen=open("Normal.log","r")
+                    d=pickle.load(fileopen)
+                    new=d-notic
+                    fileopen.close()
+                    fileopen=open("Normal.log","w")
+                    seats=int(new)
+                    pickle.dump(seats,fileopen)
+                    fileopen.close()
+                    self.details("")
+                    foodch=raw_input("Do you want to add Food Vouchers(YES or NO)?:")
+                    if foodch=="YES":
+                        foodamount=int(raw_input("Enter the amount of food you want(min INR 200)"))
+                        if foodamount<200:
+                            print "Minimum Amount is INR 200! "
+                            foodamount=0
+                            bill=notic*300+foodamount
+                            tax=(0.15)*bill
+                            totalbill=bill+tax
+                            print "BILL:",bill
+                            print"TAX:",tax
+                            print"TOTAL BILL:",totalbill
+                            print"THANKS FOR BOOKING WITH US!"
+                            print"CONFIRMATION MESSAGE WITH SEAT DETAILS SENT TO YOUR REGISTERED MOBILE PHONE"
+                            print"HOPE YOU ENJOY THE MOVIE"
+                            print"Regards"
+                            print"GOENKAN CINEMAS"
+                            bill="BILL:"+str(bill)
+                            tax="TAX:"+str(tax)
+                            totalbill="TOTAL BILL:"+str(totalbill)
+                            fileopen4=open((self.name),"a")
+                            cod="Movie Code:"+str(self.moviecode)
+                            fileopen4.write(cod)
+                            date="Date:"+self.datech
+                            fileopen4.write(date)
+                            time="TIME:"+self.timech
+                            fileopen4.write(time)
+                            fileopen4.write(bill)
+                            fileopen4.write(tax)
+                            fileopen4.write(totalbill)
+                            fileopen4.close()
+                            self.email()
+                            
+                                                   
+                        else:
+                            bill=notic*300+foodamount
+                            tax=(0.15)*bill
+                            totalbill=bill+tax
+                            print "BILL:",bill
+                            print"TAX:",tax
+                            print"TOTAL BILL:",totalbill
+                            print"THANKS FOR BOOKING WITH US!"
+                            print"CONFIRMATION MESSAGE WITH SEAT DETAILS SENT TO YOUR REGISTERED MOBILE PHONE"
+                            print"HOPE YOU ENJOY THE MOVIE"
+                            print"Regards"
+                            print"GOENKAN CINEMAS"
+                            bill="BILL:"+str(bill)
+                            tax="TAX:"+str(tax)
+                            totalbill="TOTAL BILL:"+str(totalbill)
+                            fileopen4=open((self.name),"a")
+                            cod="Movie Code:"+str(self.moviecode)
+                            fileopen4.write(cod)
+                            date="Date:"+self.datech
+                            fileopen4.write(date)
+                            time="TIME:"+self.timech
+                            fileopen4.write(time)
+                            fileopen4.write(bill)
+                            fileopen4.write(tax)
+                            fileopen4.write(totalbill)
+                            fileopen4.close()
+                            self.email()
+
+                            
+                    else:
+                        bill=notic*300
+                        tax=(0.15)*bill
+                        totalbill=bill+tax
+                        print "BILL:",bill
+                        print"TAX:",tax
+                        print"TOTAL BILL:",totalbill
+                        print"THANKS FOR BOOKING WITH US!"
+                        print"CONFIRMATION MESSAGE WITH SEAT DETAILS SENT TO YOUR REGISTERED MOBILE PHONE"
+                        print"HOPE YOU ENJOY THE MOVIE"
+                        print"Regards"
+                        print"GOENKAN CINEMAS"
+                        bill="BILL:"+str(bill)
+                        tax="TAX:"+str(tax)
+                        totalbill="TOTAL BILL:"+str(totalbill)
+                        fileopen4=open((self.name),"a")
+                        cod="Movie Code:"+str(self.moviecode)
+                        fileopen4.write(cod)
+                        date="Date:"+self.datech
+                        fileopen4.write(date)
+                        time="TIME:"+self.timech
+                        fileopen4.write(time)
+                        fileopen4.write(bill)
+                        fileopen4.write(tax)
+                        fileopen4.write(totalbill)
+                        fileopen4.close()
+                        self.email()
+                    
+                elif ticch=="RECLINER":
+                    fileopen1=open("Recliner.log","r")
+                    d=pickle.load(fileopen1)
+                    new=d-notic
+                    fileopen1.close()
+                    fileopen1=open("Recliner.log","w")
+                    seats=int(new)
+                    pickle.dump(seats,fileopen1)
+                    fileopen1.close()
+                    self.details("")
+                    foodch=raw_input("Do you want to add Food Vouchers(YES or NO)?:")
+                    if foodch=="YES":
+                        foodamount=int(raw_input("Enter the amount of food you want(min INR 200)"))
+                        if foodamount<200:
+                            print "Minimum Amount is INR 200! "
+                            foodamount=0
+                            bill=notic*600+foodamount
+                            tax=(0.15)*bill
+                            totalbill=bill+tax
+                            print "BILL:",bill
+                            print"TAX:",tax
+                            print"TOTAL BILL:",totalbill
+                            print"THANKS FOR BOOKING WITH US!"
+                            print"CONFIRMATION MESSAGE WITH SEAT DETAILS SENT TO YOUR REGISTERED MOBILE PHONE"
+                            print"HOPE YOU ENJOY THE MOVIE"
+                            print"Regards"
+                            print"GOENKAN CINEMAS"
+                            bill="BILL:"+str(bill)
+                            tax="TAX:"+str(tax)
+                            totalbill="TOTAL BILL:"+str(totalbill)
+                            fileopen4=open((self.name),"a")
+                            cod="Movie Code:"+str(self.moviecode)
+                            fileopen4.write(cod)
+                            date="Date:"+self.datech
+                            fileopen4.write(date)
+                            time="TIME:"+self.timech
+                            fileopen4.write(time)
+                            fileopen4.write(bill)
+                            fileopen4.write(tax)
+                            fileopen4.write(totalbill)
+                            fileopen4.close()
+                            self.email()
+                                                   
+                        else:
+                            bill=notic*600+foodamount
+                            tax=(0.15)*bill
+                            totalbill=bill+tax
+                            print "BILL:",bill
+                            print"TAX:",tax
+                            print"TOTAL BILL:",totalbill
+                            print"THANKS FOR BOOKING WITH US!"
+                            print"CONFIRMATION MESSAGE WITH SEAT DETAILS SENT TO YOUR REGISTERED MOBILE PHONE"
+                            print"HOPE YOU ENJOY THE MOVIE"
+                            print"Regards"
+                            print"GOENKAN CINEMAS"
+                            bill="BILL:"+str(bill)
+                            tax="TAX:"+str(tax)
+                            totalbill="TOTAL BILL:"+str(totalbill)
+                            fileopen4=open((self.name),"a")
+                            cod="Movie Code:"+str(self.moviecode)
+                            fileopen4.write(cod)
+                            date="Date:"+self.datech
+                            fileopen4.write(date)
+                            time="TIME:"+self.timech
+                            fileopen4.write(time)
+                            fileopen4.write(bill)
+                            fileopen4.write(tax)
+                            fileopen4.write(totalbill)
+                            fileopen4.close()
+                            self.email()
+                    else:
+                        bill=notic*600
+                        tax=(0.15)*bill
+                        totalbill=bill+tax
+                        print "BILL:",bill
+                        print"TAX:",tax
+                        print"TOTAL BILL:",totalbill
+                        print"THANKS FOR BOOKING WITH US!"
+                        print"CONFIRMATION MESSAGE WITH SEAT DETAILS SENT TO YOUR REGISTERED MOBILE PHONE"
+                        print"HOPE YOU ENJOY THE MOVIE"
+                        print"Regards"
+                        print"GOENKAN CINEMAS"
+                        bill="BILL:"+str(bill)
+                        tax="TAX:"+str(tax)
+                        totalbill="TOTAL BILL:"+str(totalbill)
+                        fileopen4=open((self.name),"a")
+                        cod="Movie Code:"+str(self.moviecode)
+                        fileopen4.write(cod)
+                        date="Date:"+self.datech
+                        fileopen4.write(date)
+                        time="TIME:"+self.timech
+                        fileopen4.write(time)
+                        fileopen4.write(bill)
+                        fileopen4.write(tax)
+                        fileopen4.write(totalbill)
+                        fileopen4.close()
+                        self.email()
+                    
+                else:
+                    print"Wrong Input Try Again"
+                    self.no_of_tickets(0,"","","")
+                    
+        else:
+            print"MAX 6 only Try Again!"
+            self.no_of_tickets(0,"","","")
+            
+    def details(self,name):
+        self.name=raw_input("Enter Name:")
+        mobile=raw_input("Enter Mobile No.:")
+        self.email_id=raw_input("Enter Email_id:")
+        address=raw_input("Enter Address:")
+        self.name=str(self.name)+str(mobile)
+        fileopen2=open((self.name),"w")
+        self.recs="Name:"+self.name+"Mobile No.:"+mobile+"Email:"+self.email_id+"Address:"+address
+        fileopen2.write(self.recs)
+        fileopen2.close()
+    def view(self,moviecode):
+        
+        print"Directing You Latest Trailer"
+        moviename={1001:"Raees",1002:"Kaabil",1003:"Dangal",1004:"La La Land(English)",1005:"XXX-Return of Xander Cage(Hindi)"}
+        print "{Movie Code:Movie Name}"
+        print moviename
+        self.moviecode=int(raw_input("Enter Movie Code:"))
+        new=2
+        if self.moviecode==1001:
+            url = "https://www.youtube.com/watch?v=J7_1MU3gDk0"
+            webbrowser.open(url,new=new)
+        elif self.moviecode==1002:
+            url = "https://www.youtube.com/watch?v=nubDFeiUAsI"
+            webbrowser.open(url,new=new)
+        elif self.moviecode==1003:
+            url = "https://www.youtube.com/watch?v=x_7YlGv9u1g"
+            webbrowser.open(url,new=new)
+        elif self.moviecode==1004:
+            url = "https://www.youtube.com/watch?v=0pdqf4P9MB8"
+            webbrowser.open(url,new=new)
+        elif self.moviecode==1005:
+            url = "https://www.youtube.com/watch?v=xEuM4IUFWu8"
+            webbrowser.open(url,new=new)
+           
+    def delete(self,name,emaild,email_id):
+        self.name=raw_input("Enter Your Name:")
+        mobile=raw_input("Enter Mobile No.:")
+        self.name=str(self.name)+str(mobile)
+        os.remove(self.name)
+        notic=int(raw_input("Enter no. of Tickets to Book(max 6):"))
+        ticch=raw_input("(NORMAL or RECLINER) ENTER:")
+        self.email_id=raw_input("Enter Email ID:")
+        if ticch=="NORMAL":
+            fileopen=open("Normal.log","r")
+            d=pickle.load(fileopen)
+            d+=notic
+            fileopen.close()
+            if d>=250:
+                d=250
+                fileopen=open("Normal.log","w")
+                pickle.dump(d,fileopen)
+                fileopen.close()
+                self.emaild()
+            else:
+                fileopen=open("Normal.log","w")
+                pickle.dump(d,fileopen)
+                fileopen.close()
+                self.emaild()
+        elif ticch=="RECLINER":
+            fileopen=open("Recliner.log","r")
+            d=pickle.load(fileopen)
+            d+=notic
+            fileopen.close()
+            if d>=100:
+                d=100
+                fileopen=open("Recliner.log","w")
+                pickle.dump(d,fileopen)
+                fileopen.close()
+                self.emaild()
+            else:
+                fileopen=open("Recliner.log","w")
+                pickle.dump(d,fileopen)
+                fileopen.close()
+                self.emaild()
+            
+        print("Booking Cancelled Money Will be Refunded Shortly")
+    def feedback(self):
+        name=raw_input("Enter Name:")
+        phone=raw_input("Enter Phone Number:")
+        email=raw_input("Enter Email:")
+        feedback=raw_input("Enter Feedback:")
+        file2=open("Feedback.txt","a")
+        Name="Name:"+str(name)+"\n"
+        Phone="Phone:"+str(phone)+"\n"
+        Email="Email:"+str(email)+"\n"
+        Feedback="Feedback:"+str(feedback)+"\n"
+        file2.write(Name)
+        file2.write(Phone)
+        file2.write(Email)
+        file2.write(Feedback)
+    def email(self):
+                                       
+        fromaddr = "goenkancinemas@gmail.com"
+        toaddr = self.email_id
+        msg = MIMEMultipart()
+        msg['From'] = fromaddr
+        msg['To'] = toaddr
+        msg['Subject'] = "Goenkan Movie Booking!!!"
+                             
+        body = "Dear Customer Your Booking Has been Confirmed. Hope You Enjoy With Us."
+        msg.attach(MIMEText(body, 'plain'))
+                             
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(fromaddr, "pythonrocks108")
+        text = msg.as_string()
+        server.sendmail(fromaddr, toaddr, text)
+        server.quit()
+    def emaild(self):
+                                       
+        fromaddr = "goenkancinemas@gmail.com"
+        toaddr = self.email_id
+        msg = MIMEMultipart()
+        msg['From'] = fromaddr
+        msg['To'] = toaddr
+        msg['Subject'] = "Goenkan Movie Booking!!!"
+                             
+        body = "Dear Customer Your Booking Has been Cancelled.For more infromation reply through this mail itself."
+        msg.attach(MIMEText(body, 'plain'))
+                             
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(fromaddr, "pythonrocks108")
+        text = msg.as_string()
+        server.sendmail(fromaddr, toaddr, text)
+        server.quit()
+    def readdata(self):
+        self.name=raw_input("Enter Your Name:")
+        mobile=raw_input("Enter Mobile No.:")
+        self.name=str(self.name)+str(mobile)
+        fileopen2=open((self.name),"r")
+        k=fileopen2.read()
+        print k
+        fileopen2.close()
+   
+    def Exit(self):
+        print"Thanks For Visiting"
+        
+        
+    
+        
+            
+            
+
+call=Movie(0,"","","","","","","")
